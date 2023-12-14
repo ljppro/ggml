@@ -337,9 +337,9 @@ extern "C" {
         GGML_TYPE_Q5_K = 13,
         GGML_TYPE_Q6_K = 14,
         GGML_TYPE_Q8_K = 15,
-        GGML_TYPE_I8,
-        GGML_TYPE_I16,
-        GGML_TYPE_I32,
+        GGML_TYPE_I8   = 16,
+        GGML_TYPE_I16  = 17,
+        GGML_TYPE_I32  = 18,
         GGML_TYPE_COUNT,
     };
 
@@ -371,108 +371,108 @@ extern "C" {
     enum ggml_op {
         GGML_OP_NONE = 0,
 
-        GGML_OP_DUP,
-        GGML_OP_ADD,
-        GGML_OP_ADD1,
-        GGML_OP_ACC,
-        GGML_OP_SUB,
-        GGML_OP_MUL,
-        GGML_OP_DIV,
-        GGML_OP_SQR,
-        GGML_OP_SQRT,
-        GGML_OP_LOG,
-        GGML_OP_SUM,
-        GGML_OP_SUM_ROWS,
-        GGML_OP_MEAN,
-        GGML_OP_ARGMAX,
-        GGML_OP_REPEAT,
-        GGML_OP_REPEAT_BACK,
-        GGML_OP_CONCAT,
-        GGML_OP_SILU_BACK,
-        GGML_OP_NORM, // normalize
-        GGML_OP_RMS_NORM,
-        GGML_OP_RMS_NORM_BACK,
-        GGML_OP_GROUP_NORM,
+        GGML_OP_DUP = 1,
+        GGML_OP_ADD = 2,
+        GGML_OP_ADD1 = 3,
+        GGML_OP_ACC = 4,
+        GGML_OP_SUB = 5,
+        GGML_OP_MUL = 6,
+        GGML_OP_DIV = 7,
+        GGML_OP_SQR = 8,
+        GGML_OP_SQRT = 9,
+        GGML_OP_LOG = 10,
+        GGML_OP_SUM = 11,
+        GGML_OP_SUM_ROWS = 12,
+        GGML_OP_MEAN = 13,
+        GGML_OP_ARGMAX = 14,
+        GGML_OP_REPEAT = 15,
+        GGML_OP_REPEAT_BACK = 16,
+        GGML_OP_CONCAT = 17,
+        GGML_OP_SILU_BACK = 18,
+        GGML_OP_NORM = 19, // normalize
+        GGML_OP_RMS_NORM = 20,
+        GGML_OP_RMS_NORM_BACK = 21,
+        GGML_OP_GROUP_NORM = 22,
 
-        GGML_OP_MUL_MAT,
-        GGML_OP_MUL_MAT_ID,
-        GGML_OP_OUT_PROD,
+        GGML_OP_MUL_MAT = 23,
+        GGML_OP_MUL_MAT_ID = 24,
+        GGML_OP_OUT_PROD = 25,
 
-        GGML_OP_SCALE,
-        GGML_OP_SET,
-        GGML_OP_CPY,
-        GGML_OP_CONT,
-        GGML_OP_RESHAPE,
-        GGML_OP_VIEW,
-        GGML_OP_PERMUTE,
-        GGML_OP_TRANSPOSE,
-        GGML_OP_GET_ROWS,
-        GGML_OP_GET_ROWS_BACK,
-        GGML_OP_DIAG,
-        GGML_OP_DIAG_MASK_INF,
-        GGML_OP_DIAG_MASK_ZERO,
-        GGML_OP_SOFT_MAX,
-        GGML_OP_SOFT_MAX_BACK,
-        GGML_OP_ROPE,
-        GGML_OP_ROPE_BACK,
-        GGML_OP_ALIBI,
-        GGML_OP_CLAMP,
-        GGML_OP_CONV_TRANSPOSE_1D,
-        GGML_OP_IM2COL,
-        GGML_OP_CONV_TRANSPOSE_2D,
-        GGML_OP_POOL_1D,
-        GGML_OP_POOL_2D,
-        GGML_OP_UPSCALE, // nearest interpolate
-        GGML_OP_PAD,
-        GGML_OP_ARGSORT,
-        GGML_OP_LEAKY_RELU,
+        GGML_OP_SCALE = 26,
+        GGML_OP_SET = 27,
+        GGML_OP_CPY = 28,
+        GGML_OP_CONT = 29,
+        GGML_OP_RESHAPE = 30,
+        GGML_OP_VIEW = 31,
+        GGML_OP_PERMUTE = 32,
+        GGML_OP_TRANSPOSE = 33,
+        GGML_OP_GET_ROWS = 34,
+        GGML_OP_GET_ROWS_BACK = 35,
+        GGML_OP_DIAG = 36,
+        GGML_OP_DIAG_MASK_INF = 37,
+        GGML_OP_DIAG_MASK_ZERO = 38,
+        GGML_OP_SOFT_MAX = 39,
+        GGML_OP_SOFT_MAX_BACK = 40,
+        GGML_OP_ROPE = 41,
+        GGML_OP_ROPE_BACK = 42,
+        GGML_OP_ALIBI = 43,
+        GGML_OP_CLAMP = 44,
+        GGML_OP_CONV_TRANSPOSE_1D = 45,
+        GGML_OP_IM2COL = 46,
+        GGML_OP_CONV_TRANSPOSE_2D = 47,
+        GGML_OP_POOL_1D = 48,
+        GGML_OP_POOL_2D = 49,
+        GGML_OP_UPSCALE = 50, // nearest interpolate
+        GGML_OP_PAD = 51,
+        GGML_OP_ARGSORT = 52,
+        GGML_OP_LEAKY_RELU = 53,
 
-        GGML_OP_FLASH_ATTN,
-        GGML_OP_FLASH_FF,
-        GGML_OP_FLASH_ATTN_BACK,
-        GGML_OP_WIN_PART,
-        GGML_OP_WIN_UNPART,
-        GGML_OP_GET_REL_POS,
-        GGML_OP_ADD_REL_POS,
+        GGML_OP_FLASH_ATTN = 54,
+        GGML_OP_FLASH_FF = 55,
+        GGML_OP_FLASH_ATTN_BACK = 56,
+        GGML_OP_WIN_PART = 57,
+        GGML_OP_WIN_UNPART = 58,
+        GGML_OP_GET_REL_POS = 59,
+        GGML_OP_ADD_REL_POS = 60,
 
-        GGML_OP_UNARY,
+        GGML_OP_UNARY = 61,
 
-        GGML_OP_MAP_UNARY,
-        GGML_OP_MAP_BINARY,
+        GGML_OP_MAP_UNARY = 62,
+        GGML_OP_MAP_BINARY = 63,
 
-        GGML_OP_MAP_CUSTOM1_F32,
-        GGML_OP_MAP_CUSTOM2_F32,
-        GGML_OP_MAP_CUSTOM3_F32,
+        GGML_OP_MAP_CUSTOM1_F32 = 64,
+        GGML_OP_MAP_CUSTOM2_F32 = 65,
+        GGML_OP_MAP_CUSTOM3_F32 = 66,
 
-        GGML_OP_MAP_CUSTOM1,
-        GGML_OP_MAP_CUSTOM2,
-        GGML_OP_MAP_CUSTOM3,
+        GGML_OP_MAP_CUSTOM1 = 67,
+        GGML_OP_MAP_CUSTOM2 = 68,
+        GGML_OP_MAP_CUSTOM3 = 69,
 
-        GGML_OP_CROSS_ENTROPY_LOSS,
-        GGML_OP_CROSS_ENTROPY_LOSS_BACK,
+        GGML_OP_CROSS_ENTROPY_LOSS = 70,
+        GGML_OP_CROSS_ENTROPY_LOSS_BACK = 71,
 
         GGML_OP_COUNT,
     };
 
     enum ggml_unary_op {
-        GGML_UNARY_OP_ABS,
-        GGML_UNARY_OP_SGN,
-        GGML_UNARY_OP_NEG,
-        GGML_UNARY_OP_STEP,
-        GGML_UNARY_OP_TANH,
-        GGML_UNARY_OP_ELU,
-        GGML_UNARY_OP_RELU,
-        GGML_UNARY_OP_GELU,
-        GGML_UNARY_OP_GELU_QUICK,
-        GGML_UNARY_OP_SILU,
+        GGML_UNARY_OP_ABS = 0,
+        GGML_UNARY_OP_SGN = 1,
+        GGML_UNARY_OP_NEG = 2,
+        GGML_UNARY_OP_STEP = 3,
+        GGML_UNARY_OP_TANH = 4,
+        GGML_UNARY_OP_ELU = 5,
+        GGML_UNARY_OP_RELU = 6,
+        GGML_UNARY_OP_GELU = 7,
+        GGML_UNARY_OP_GELU_QUICK = 8,
+        GGML_UNARY_OP_SILU = 9,
 
         GGML_UNARY_OP_COUNT,
     };
 
     enum ggml_object_type {
-        GGML_OBJECT_TENSOR,
-        GGML_OBJECT_GRAPH,
-        GGML_OBJECT_WORK_BUFFER
+        GGML_OBJECT_TENSOR = 0,
+        GGML_OBJECT_GRAPH = 1,
+        GGML_OBJECT_WORK_BUFFER = 2
     };
 
     enum ggml_log_level {
@@ -554,7 +554,7 @@ extern "C" {
 
     enum ggml_cgraph_eval_order {
         GGML_CGRAPH_EVAL_ORDER_LEFT_TO_RIGHT = 0,
-        GGML_CGRAPH_EVAL_ORDER_RIGHT_TO_LEFT,
+        GGML_CGRAPH_EVAL_ORDER_RIGHT_TO_LEFT = 1,
         GGML_CGRAPH_EVAL_ORDER_COUNT
     };
 
@@ -604,8 +604,8 @@ extern "C" {
     // This behavior was changed since https://github.com/ggerganov/llama.cpp/pull/1995.
     enum ggml_task_type {
         GGML_TASK_INIT = 0,
-        GGML_TASK_COMPUTE,
-        GGML_TASK_FINALIZE,
+        GGML_TASK_COMPUTE = 1,
+        GGML_TASK_FINALIZE = 2,
     };
 
     struct ggml_compute_params {
@@ -1521,8 +1521,8 @@ extern "C" {
             int                   stride);
 
     enum ggml_op_pool {
-        GGML_OP_POOL_MAX,
-        GGML_OP_POOL_AVG,
+        GGML_OP_POOL_MAX = 0,
+        GGML_OP_POOL_AVG = 1,
         GGML_OP_POOL_COUNT,
     };
 
@@ -1565,8 +1565,8 @@ extern "C" {
 
     // sort rows
     enum ggml_sort_order {
-        GGML_SORT_ASC,
-        GGML_SORT_DESC,
+        GGML_SORT_ASC = 1,
+        GGML_SORT_DESC = 2,
     };
 
     GGML_API struct ggml_tensor * ggml_argsort(
@@ -1859,8 +1859,8 @@ extern "C" {
 
     // optimization methods
     enum ggml_opt_type {
-        GGML_OPT_ADAM,
-        GGML_OPT_LBFGS,
+        GGML_OPT_ADAM = 1,
+        GGML_OPT_LBFGS = 2,
     };
 
     // linesearch methods
@@ -1875,17 +1875,17 @@ extern "C" {
     // optimization return values
     enum ggml_opt_result {
         GGML_OPT_OK = 0,
-        GGML_OPT_DID_NOT_CONVERGE,
-        GGML_OPT_NO_CONTEXT,
-        GGML_OPT_INVALID_WOLFE,
-        GGML_OPT_FAIL,
-        GGML_OPT_CANCEL,
+        GGML_OPT_DID_NOT_CONVERGE = 1,
+        GGML_OPT_NO_CONTEXT = 2,
+        GGML_OPT_INVALID_WOLFE = 3,
+        GGML_OPT_FAIL = 4,
+        GGML_OPT_CANCEL = 5,
 
         GGML_LINESEARCH_FAIL = -128,
-        GGML_LINESEARCH_MINIMUM_STEP,
-        GGML_LINESEARCH_MAXIMUM_STEP,
-        GGML_LINESEARCH_MAXIMUM_ITERATIONS,
-        GGML_LINESEARCH_INVALID_PARAMETERS,
+        GGML_LINESEARCH_MINIMUM_STEP = -127,
+        GGML_LINESEARCH_MAXIMUM_STEP = -126,
+        GGML_LINESEARCH_MAXIMUM_ITERATIONS = -125,
+        GGML_LINESEARCH_INVALID_PARAMETERS = -124,
     };
 
     typedef void (*ggml_opt_callback)(void * data, int accum_step, float * sched, bool * cancel);
