@@ -167,6 +167,8 @@ enum ggml_metal_kernel_type {
     GGML_METAL_KERNEL_TYPE_ALIBI_F32,
     GGML_METAL_KERNEL_TYPE_IM2COL_F16,
     GGML_METAL_KERNEL_TYPE_IM2COL_F32,
+    GGML_METAL_KERNEL_TYPE_COL2IM_F16,
+    GGML_METAL_KERNEL_TYPE_COL2IM_F32,
     GGML_METAL_KERNEL_TYPE_UPSCALE_F32,
     GGML_METAL_KERNEL_TYPE_PAD_F32,
     GGML_METAL_KERNEL_TYPE_ARANGE_F32,
@@ -599,6 +601,8 @@ static struct ggml_metal_context * ggml_metal_init(int n_cb) {
         GGML_METAL_ADD_KERNEL(GGML_METAL_KERNEL_TYPE_ALIBI_F32,                 alibi_f32,              true);
         GGML_METAL_ADD_KERNEL(GGML_METAL_KERNEL_TYPE_IM2COL_F16,                im2col_f16,             true);
         GGML_METAL_ADD_KERNEL(GGML_METAL_KERNEL_TYPE_IM2COL_F32,                im2col_f32,             true);
+        GGML_METAL_ADD_KERNEL(GGML_METAL_KERNEL_TYPE_COL2IM_F16,                col2im_f16,             true);
+        GGML_METAL_ADD_KERNEL(GGML_METAL_KERNEL_TYPE_COL2IM_F32,                col2im_f32,             true);
         GGML_METAL_ADD_KERNEL(GGML_METAL_KERNEL_TYPE_UPSCALE_F32,               upscale_f32,            true);
         GGML_METAL_ADD_KERNEL(GGML_METAL_KERNEL_TYPE_PAD_F32,                   pad_f32,                true);
         GGML_METAL_ADD_KERNEL(GGML_METAL_KERNEL_TYPE_TIMESTEP_EMBEDDING_F32,    timestep_embedding_f32, true);
@@ -727,6 +731,7 @@ static bool ggml_metal_supports_op(const struct ggml_metal_context * ctx, const 
         case GGML_OP_ALIBI:
         case GGML_OP_ROPE:
         case GGML_OP_IM2COL:
+        case GGML_OP_COL2IM:
             return true;
         case GGML_OP_POOL_1D:
         case GGML_OP_POOL_2D:
@@ -2300,6 +2305,57 @@ static enum ggml_status ggml_metal_graph_compute(
                         [encoder setBytes:&ofs1    length:sizeof( int32_t) atIndex:3];
                         [encoder setBytes:&IW      length:sizeof( int32_t) atIndex:4];
                         [encoder setBytes:&IH      length:sizeof( int32_t) atIndex:5];
+                        [encoder setBytes:&CHW     length:sizeof( int32_t) atIndex:6];
+                        [encoder setBytes:&s0      length:sizeof( int32_t) atIndex:7];
+                        [encoder setBytes:&s1      length:sizeof( int32_t) atIndex:8];
+                        [encoder setBytes:&p0      length:sizeof( int32_t) atIndex:9];
+                        [encoder setBytes:&p1      length:sizeof( int32_t) atIndex:10];
+                        [encoder setBytes:&d0      length:sizeof( int32_t) atIndex:11];
+                        [encoder setBytes:&d1      length:sizeof( int32_t) atIndex:12];
+
+                        [encoder dispatchThreadgroups:MTLSizeMake(IC, OH, OW) threadsPerThreadgroup:MTLSizeMake(N, KH, KW)];
+                    } break;
+                case GGML_OP_COL2IM:
+                    {
+                        GGML_ASSERT(src0->type == GGML_TYPE_F16);
+                        GGML_ASSERT(src1->type == GGML_TYPE_F32);
+                        GGML_ASSERT( dst->type == GGML_TYPE_F16 || dst->type == GGML_TYPE_F32);
+
+                        const int32_t s0 = ((const int32_t *)(dst->op_params))[0];
+                        const int32_t s1 = ((const int32_t *)(dst->op_params))[1];
+                        const int32_t p0 = ((const int32_t *)(dst->op_params))[2];
+                        const int32_t p1 = ((const int32_t *)(dst->op_params))[3];
+                        const int32_t d0 = ((const int32_t *)(dst->op_params))[4];
+                        const int32_t d1 = ((const int32_t *)(dst->op_params))[5];
+                        const bool is_2D = ((const int32_t *)(dst->op_params))[6] == 1;
+
+                        const int32_t N  = src1->ne[is_2D ? 3 : 2];
+                        const int32_t IC = src0->ne[is_2D ? 3 : 2];
+                        const int32_t IH = is_2D ? src1->ne[2] : 1;
+                        const int32_t IW =         src1->ne[1];
+
+                        const int32_t KH = is_2D ? src0->ne[1] : 1;
+                        const int32_t KW =         src0->ne[0];
+
+                        const int32_t OH = is_2D ? dst->ne[1] : 1;
+                        const int32_t OW =         dst->ne[0];
+
+                        const int32_t CHW = IC * KH * KW;
+
+                        id<MTLComputePipelineState> pipeline = nil;
+
+                        switch (dst->type) {
+                            case GGML_TYPE_F32: pipeline = ctx->kernels[GGML_METAL_KERNEL_TYPE_IM2COL_F32].pipeline; break;
+                            case GGML_TYPE_F16: pipeline = ctx->kernels[GGML_METAL_KERNEL_TYPE_IM2COL_F16].pipeline; break;
+                            default: GGML_ASSERT(false);
+                        };
+
+                        [encoder setComputePipelineState:pipeline];
+                        [encoder setBuffer:id_src1 offset:offs_src1        atIndex:0];
+                        [encoder setBuffer:id_dst  offset:offs_dst         atIndex:1];
+                        // TODO:
+                        [encoder setBytes:&OW      length:sizeof( int32_t) atIndex:4];
+                        [encoder setBytes:&OH      length:sizeof( int32_t) atIndex:5];
                         [encoder setBytes:&CHW     length:sizeof( int32_t) atIndex:6];
                         [encoder setBytes:&s0      length:sizeof( int32_t) atIndex:7];
                         [encoder setBytes:&s1      length:sizeof( int32_t) atIndex:8];
