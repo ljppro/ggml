@@ -29,6 +29,7 @@
 #include "ggml-cuda/tsembd.cuh"
 #include "ggml-cuda/unary.cuh"
 #include "ggml-cuda/upscale.cuh"
+#include "ggml-cuda/padreflect.cuh"
 #include "ggml-cuda/conv-transpose-1d.cuh"
 
 #include <algorithm>
@@ -2206,6 +2207,9 @@ static bool ggml_cuda_compute_forward(ggml_backend_cuda_context & ctx, struct gg
         case GGML_OP_UPSCALE:
             ggml_cuda_op_upscale(ctx, dst);
             break;
+        case GGML_OP_PAD_REFLECT_1D:
+            ggml_cuda_op_pad_reflect_1d(ctx, dst);
+            break;
         case GGML_OP_PAD:
             ggml_cuda_op_pad(ctx, dst);
             break;
@@ -2844,6 +2848,7 @@ GGML_CALL static bool ggml_backend_cuda_supports_op(ggml_backend_t backend, cons
         case GGML_OP_ACC:
         case GGML_OP_GROUP_NORM:
         case GGML_OP_UPSCALE:
+        case GGML_OP_PAD_REFLECT_1D:
         case GGML_OP_PAD:
         case GGML_OP_ARANGE:
         case GGML_OP_TIMESTEP_EMBEDDING:
