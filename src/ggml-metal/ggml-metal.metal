@@ -1248,6 +1248,23 @@ kernel void kernel_ssm_scan_f32(
     }
 }
 
+kernel void kernel_argmax(
+        device   const void * x,
+        device      int32_t * dst,
+        constant    int64_t & ncols,
+        constant   uint64_t & nb01,
+        uint tgpig[[threadgroup_position_in_grid]]) {
+    device const float * x_row = (device const float *) ((device const char *) x + tgpig * nb01);
+
+    dst[tgpig] = 0;
+
+    for (int i = 0; i < ncols; i++) {
+        if (x_row[i] > x_row[dst[tgpig]]) {
+            dst[tgpig] = i;
+        }
+    }
+}
+
 kernel void kernel_norm(
         constant ggml_metal_kargs_norm & args,
         device const char * src0,
